@@ -98,7 +98,9 @@ class BatteryClient(BaseClient):
         data = {}
         data["function"] = FUNCTION.get(bytes_to_int(bs, 1, 1))
         data["cell_voltage_alarm"] = bytes_to_int(bs, 3, 4)
+        # need to do this for all 16 cells
         data["cell_temperature_alarm"] = bytes_to_int(bs, 7, 4)
+        # need to do this for all 16 cells
         data["other_alarm"] = bytes_to_int(bs, 11, 4)
         data["status_1"] = bytes_to_int(bs, 15, 2)
         data["status_1_values"] = {
@@ -161,8 +163,8 @@ class BatteryClient(BaseClient):
         data["charge_discharge_status_values"] = {
             "charge_enable": (data["charge_discharge_status"] & 0x0080) >> 7,
             "discharge_enable": (data["charge_discharge_status"] & 0x0040) >> 6,
-            "charge_immediately": (data["charge_discharge_status"] & 0x0020) >> 5,
-            "charge_immediately": (data["charge_discharge_status"] & 0x0010) >> 4,
+            "charge_immediately1": (data["charge_discharge_status"] & 0x0020) >> 5,
+            "charge_immediately2": (data["charge_discharge_status"] & 0x0010) >> 4,
             "full_charge": (data["charge_discharge_status"] & 0x0008) >> 3,
             "reserved_2": (data["charge_discharge_status"] & 0x0004) >> 2,
             "reserved_1": (data["charge_discharge_status"] & 0x0002) >> 1,
@@ -177,9 +179,7 @@ class BatteryClient(BaseClient):
         #  data["serial_number"] = (bs[3:19]).decode("utf-8").rstrip("\x00")
         data["manufacture_version"] = (bs[20:22]).decode("utf-8").rstrip("\x00")
         data["main_line_version"] = (bs[23:27]).decode("utf-8").rstrip("\x00")
-        data["communication_protocol_version"] = (
-            (bs[28:30]).decode("utf-8").rstrip("\x00")
-        )
+        data["communication_protocol_version"] = (bs[28:30]).decode("utf-8").rstrip("\x00")
         data["battery_name"] = (bs[31:47]).decode("utf-8").rstrip("\x00")
         data["software_version"] = (bs[48:52]).decode("utf-8").rstrip("\x00")
         data["manufacturer_name"] = (bs[53:73]).decode("utf-8").rstrip("\x00")
