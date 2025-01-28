@@ -26,7 +26,9 @@ class BaseClient:
         self.read_timeout = None
         self.batteries = {}
         self.data = {}
-        self.devices = self.config["device"]["device_list"].split(",")
+        self.devices = [
+            device.strip() for device in self.config["device"]["device_list"].split(",")
+        ]
         self.device_index = 0
         self.device_id = self.devices[self.device_index]
         self.sections = []
@@ -61,7 +63,8 @@ class BaseClient:
 
         if not self.ble_manager.device:
             logging.error(
-                f"Device not found: {self.config['device']['alias']} => {self.config['device']['mac_addr']}, please check the details provided."
+                f"Device not found: {self.config['device']['alias']} => "
+                f"{self.config['device']['mac_addr']}, please check the details provided."
             )
             for dev in self.ble_manager.discovered_devices:
                 if dev.name is not None and dev.name.startswith(tuple(ALIAS_PREFIXES)):
@@ -86,11 +89,11 @@ class BaseClient:
                 operation == READ_SUCCESS
                 and self.device_index < len(self.devices)
                 and self.section_index < len(self.sections)
-                and self.sections[self.section_index]["parser"] != None
+                and self.sections[self.section_index]["parser"] is not None
                 and self.sections[self.section_index]["words"] * 2 + 5 == len(response)
             ):
                 # call the parser and update data
-                logging.info(f"on_data_received: read operation success")
+                logging.info("on_data_received: read operation success")
                 self.__safe_parser(self.sections[self.section_index]["parser"], response)
             else:
                 logging.info(f"on_data_received: read operation failed: {response.hex()}")
