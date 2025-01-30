@@ -25,7 +25,7 @@ class BLEManager:
         logging.info("Devices found: %s", len(self.discovered_devices))
 
         for dev in self.discovered_devices:
-            if dev.address != None and (
+            if dev.address is not None and (
                 dev.address.upper() == mac_address
                 or (dev.name and dev.name.strip() == self.device_alias)
             ):
@@ -51,7 +51,7 @@ class BLEManager:
                     if characteristic.uuid == self.write_char_uuid:
                         logging.info(f"found write characteristic {characteristic.uuid}")
         except Exception:
-            logging.error(f"Error connecting to device")
+            logging.error("Error connecting to device")
             self.connect_fail_callback(sys.exc_info())
 
     async def notification_callback(self, characteristic, data: bytearray):
