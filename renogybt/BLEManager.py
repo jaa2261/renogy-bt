@@ -61,6 +61,8 @@ class BLEManager:
     async def characteristic_write_value(self, data):
         try:
             logging.info(f"writing to {self.write_char_uuid} {data}")
+            req = bytearray(data)
+            logging.info(f"req: {req}")
             await self.client.write_gatt_char(self.write_char_uuid, bytearray(data))
             logging.info("characteristic_write_value succeeded")
             await asyncio.sleep(0.5)

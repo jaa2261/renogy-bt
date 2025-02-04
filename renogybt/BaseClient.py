@@ -162,7 +162,7 @@ class BaseClient:
             crc = crc16_modbus(bytes(data))
             data.append(crc[0])
             data.append(crc[1])
-            logging.debug("{} {} => {}".format("create_request_payload", regAddr, data))
+            logging.info("{} {} => {}".format("create_request_payload", regAddr, data))
         return data
 
     def __on_error(self, error=None):
